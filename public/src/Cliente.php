@@ -1,6 +1,8 @@
 <?php
 
 require_once 'Resumible.php'; // Asegúrate de incluir la interfaz Resumible
+require_once 'DulceNoCompradoException.php'; // Excepción DulceNoComprado
+require_once 'DulceYaCompradoException.php'; // Excepción DulceYaComprado
 
 class Cliente implements Resumible {
     private $nombre;
@@ -45,24 +47,29 @@ class Cliente implements Resumible {
      * Agrega un dulce al cliente
      * 
      * @param Dulce $dulce Objeto Dulce que el cliente ha comprado
+     * @return Cliente La instancia actual para encadenamiento de métodos
      */
     public function agregarDulce(Dulce $dulce) {
         $this->dulcesComprados[] = $dulce;
         $this->incrementarPedidos();
+        return $this; // Permite el encadenamiento de métodos
     }
 
     /**
      * Realiza una compra de un dulce
      * 
      * @param Dulce $dulce Objeto Dulce que se compra
+     * @throws DulceYaCompradoException Si el dulce ya ha sido comprado previamente
+     * @return Cliente La instancia actual para encadenamiento de métodos
      */
     public function comprar(Dulce $dulce) {
         if ($this->listaDeDulces($dulce)) {
-            echo "El dulce '{$dulce->getNombre()}' ya ha sido comprado previamente.\n";
+            throw new DulceYaCompradoException("El dulce '{$dulce->getNombre()}' ya ha sido comprado previamente.");
         } else {
             $this->agregarDulce($dulce);
             echo "Compra realizada: '{$dulce->getNombre()}' agregado a tu lista de compras.\n";
         }
+        return $this; // Permite el encadenamiento de métodos
     }
 
     /**
@@ -85,14 +92,17 @@ class Cliente implements Resumible {
      * 
      * @param Dulce $dulce Objeto Dulce que el cliente valora
      * @param string $comentario Comentario sobre el dulce
+     * @throws DulceNoCompradoException Si el cliente intenta valorar un dulce que no ha comprado
+     * @return Cliente La instancia actual para encadenamiento de métodos
      */
     public function valorar(Dulce $dulce, $comentario) {
         if ($this->listaDeDulces($dulce)) {
             $this->comentarios[$dulce->getNombre()] = $comentario;
             echo "Comentario registrado: '{$comentario}' sobre el dulce '{$dulce->getNombre()}'.\n";
         } else {
-            echo "No puedes valorar el dulce '{$dulce->getNombre()}', ya que no lo has comprado.\n";
+            throw new DulceNoCompradoException("No puedes valorar el dulce '{$dulce->getNombre()}', ya que no lo has comprado.");
         }
+        return $this; // Permite el encadenamiento de métodos
     }
 
     /**

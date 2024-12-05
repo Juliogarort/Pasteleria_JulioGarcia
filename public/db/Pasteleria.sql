@@ -27,21 +27,3 @@ CREATE TABLE IF NOT EXISTS pedidos (
     FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 );
-
--- Inserción de datos en la tabla champ
-INSERT INTO champ (name, rol, difficulty, description) VALUES
-('Ahri', 'Mago', '2', 'Maga que encanta a los enemigos y los asesina.'),
-('Ashe', 'Tirador', '1', 'Arquera que ralentiza y congela a sus enemigos.'),
-('Lee Sin', 'Luchador', '3', 'Monje ciego con movilidad y gran habilidad.'),
-('Darius', 'Luchador', '2', 'Guerrero que ejecuta enemigos con su guadaña.'),
-('Jinx', 'Tirador', '2', 'Tiradora caótica con explosivos y ametralladora.');
-
-
--- creación de la tabla user
-CREATE TABLE IF NOT EXISTS user (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    email VARCHAR(100) NOT NULL
-);
