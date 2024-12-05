@@ -1,5 +1,4 @@
 <?php
-
 require_once 'Dulce.php';
 
 class Bollo extends Dulce {
@@ -10,14 +9,16 @@ class Bollo extends Dulce {
         $this->relleno = $relleno;
     }
 
+    public function getTipo() {
+        return "Bollo";
+    }
+
     public function getRelleno() {
         return $this->relleno;
     }
 
-    // Implementación del método muestraResumen
     public function muestraResumen() {
-        return "Bollo: {$this->getNombre()} - Precio: {$this->getPrecio()}€ - Relleno: {$this->getRelleno()}";
+        return "Bollo: {$this->nombre}, Precio: {$this->precio}, Relleno: {$this->relleno}";
     }
 }
-
 ?>

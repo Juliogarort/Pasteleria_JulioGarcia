@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Conexion.php'; // Incluir la clase de conexión
 require_once 'Resumible.php'; // Asegúrate de incluir la interfaz Resumible
 require_once 'DulceNoCompradoException.php'; // Excepción DulceNoComprado
 require_once 'DulceYaCompradoException.php'; // Excepción DulceYaComprado
@@ -24,6 +25,9 @@ class Cliente implements Resumible {
         $this->numPedidosEfectuados = $numPedidosEfectuados;
         $this->dulcesComprados = [];
         $this->comentarios = [];
+
+        // Guardamos el cliente en la base de datos cuando se crea
+        $this->guardarClienteEnBD();
     }
 
     // Métodos getter
@@ -52,6 +56,8 @@ class Cliente implements Resumible {
     public function agregarDulce(Dulce $dulce) {
         $this->dulcesComprados[] = $dulce;
         $this->incrementarPedidos();
+        // Actualizamos la base de datos con el número de pedidos
+        $this->actualizarPedidosEnBD();
         return $this; // Permite el encadenamiento de métodos
     }
 
@@ -122,6 +128,28 @@ class Cliente implements Resumible {
         foreach ($this->dulcesComprados as $dulce) {
             echo "- {$dulce->getNombre()}\n";
         }
+    }
+
+    // Guardar el cliente en la base de datos
+    private function guardarClienteEnBD() {
+        $conexion = Conexion::obtenerInstancia()->obtenerConexion();
+        $query = "INSERT INTO clientes (nombre, numero, num_pedidos) 
+                  VALUES (:nombre, :numero, :num_pedidos)";
+        $stmt = $conexion->prepare($query);
+        $stmt->bindParam(':nombre', $this->nombre);
+        $stmt->bindParam(':numero', $this->numero);
+        $stmt->bindParam(':num_pedidos', $this->numPedidosEfectuados);
+        $stmt->execute();
+    }
+
+    // Actualizar los pedidos en la base de datos cuando el cliente realiza una compra
+    private function actualizarPedidosEnBD() {
+        $conexion = Conexion::obtenerInstancia()->obtenerConexion();
+        $query = "UPDATE clientes SET num_pedidos = :num_pedidos WHERE numero = :numero";
+        $stmt = $conexion->prepare($query);
+        $stmt->bindParam(':num_pedidos', $this->numPedidosEfectuados);
+        $stmt->bindParam(':numero', $this->numero);
+        $stmt->execute();
     }
 }
 

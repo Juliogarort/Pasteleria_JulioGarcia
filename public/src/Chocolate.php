@@ -1,5 +1,4 @@
 <?php
-
 require_once 'Dulce.php';
 
 class Chocolate extends Dulce {
@@ -12,18 +11,16 @@ class Chocolate extends Dulce {
         $this->peso = $peso;
     }
 
-    public function getPorcentajeCacao() {
-        return $this->porcentajeCacao;
+    public function getTipo() {
+        return "Chocolate";
     }
 
-    public function getPeso() {
-        return $this->peso;
+    public function getRelleno() {
+        return "No tiene relleno"; // Los chocolates no tienen relleno
     }
 
-    // Implementación del método muestraResumen
     public function muestraResumen() {
-        return "Chocolate: {$this->getNombre()} - Precio: {$this->getPrecio()}€ - Cacao: {$this->getPorcentajeCacao()}% - Peso: {$this->getPeso()}g";
+        return "Chocolate: {$this->nombre}, Precio: {$this->precio}, Cacao: {$this->porcentajeCacao}%, Peso: {$this->peso}g";
     }
 }
-
 ?>

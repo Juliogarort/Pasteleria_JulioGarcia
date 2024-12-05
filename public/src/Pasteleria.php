@@ -1,5 +1,6 @@
 <?php
 
+require_once 'Conexion.php'; // Incluir la clase de conexión
 require_once 'Dulce.php'; // Clase abstracta Dulce
 require_once 'Bollo.php'; // Clase hija Bollo
 require_once 'Chocolate.php'; // Clase hija Chocolate
@@ -18,11 +19,11 @@ class Pasteleria {
     public function agregarBollo($nombre, $precio, $categoria, $relleno) {
         try {
             if ($this->buscarProductoPorNombre($nombre)) {
-                // Lanza la excepción si el producto ya existe
                 throw new PasteleriaException("El bollo '{$nombre}' ya está registrado.");
             }
             $bollo = new Bollo($nombre, $precio, $categoria, $relleno);
             $this->incluirProducto($bollo);
+            $this->guardarProductoEnBD($bollo);
             echo "Bollo '{$nombre}' agregado a la pastelería.\n";
         } catch (PasteleriaException $e) {
             echo "Error: " . $e->getMessage() . "\n";
@@ -36,6 +37,7 @@ class Pasteleria {
             }
             $chocolate = new Chocolate($nombre, $precio, $categoria, $porcentajeCacao, $peso);
             $this->incluirProducto($chocolate);
+            $this->guardarProductoEnBD($chocolate);
             echo "Chocolate '{$nombre}' agregado a la pastelería.\n";
         } catch (PasteleriaException $e) {
             echo "Error: " . $e->getMessage() . "\n";
@@ -49,6 +51,7 @@ class Pasteleria {
             }
             $tarta = new Tarta($nombre, $precio, $categoria, $relleno, $pisos, $minComensales, $maxComensales);
             $this->incluirProducto($tarta);
+            $this->guardarProductoEnBD($tarta);
             echo "Tarta '{$nombre}' agregada a la pastelería.\n";
         } catch (PasteleriaException $e) {
             echo "Error: " . $e->getMessage() . "\n";
@@ -75,6 +78,7 @@ class Pasteleria {
             }
             $cliente = new Cliente($nombre, $numero);
             $this->clientes[] = $cliente;
+            $this->guardarClienteEnBD($cliente);
             echo "Cliente '{$nombre}' registrado en la pastelería.\n";
         } catch (PasteleriaException $e) {
             echo "Error: " . $e->getMessage() . "\n";
@@ -88,30 +92,32 @@ class Pasteleria {
         }
     }
 
-    public function realizarPedido(Cliente $cliente, $nombreDulce) {
-        try {
-            // Intentamos buscar el dulce por nombre
-            $dulce = $this->buscarProductoPorNombre($nombreDulce);
-            
-            if (!$dulce) {
-                // Si no encontramos el dulce, lanzamos la excepción DulceNoEncontrado
-                throw new DulceNoEncontradoException("El dulce '{$nombreDulce}' no está disponible en la pastelería.");
-            }
+    // Guardar el producto en la base de datos
+    private function guardarProductoEnBD(Dulce $dulce) {
+        $conexion = Conexion::obtenerInstancia()->obtenerConexion();
+        $query = "INSERT INTO productos (nombre, precio, categoria, tipo, relleno) 
+                  VALUES (:nombre, :precio, :categoria, :tipo, :relleno)";
+        $stmt = $conexion->prepare($query);
+        $stmt->bindValue(':nombre', $dulce->getNombre());
+        $stmt->bindValue(':precio', $dulce->getPrecio());
+        $stmt->bindValue(':categoria', $dulce->getCategoria());
+        $stmt->bindValue(':tipo', method_exists($dulce, 'getTipo') ? $dulce->getTipo() : null);
+        $stmt->bindValue(':relleno', method_exists($dulce, 'getRelleno') ? $dulce->getRelleno() : null);
+    
+        $stmt->execute();
+    }
+    
 
-            // Intentamos realizar la compra del dulce
-            $cliente->comprar($dulce);  // Esto ya realiza la verificación de si el dulce ha sido comprado
-
-            // Si la compra fue exitosa, muestra el mensaje
-            echo "Pedido realizado: '{$cliente->getNombre()}' ha comprado '{$dulce->getNombre()}'.\n";
-        } catch (DulceNoEncontradoException $e) {
-            echo "Error: " . $e->getMessage() . "\n";
-        } catch (DulceYaCompradoException $e) {
-            echo "Error: " . $e->getMessage() . "\n";
-        } catch (DulceNoCompradoException $e) {
-            echo "Error: " . $e->getMessage() . "\n";
-        } catch (ClienteNoEncontradoException $e) {
-            echo "Error: " . $e->getMessage() . "\n";
-        }
+    // Guardar el cliente en la base de datos
+    private function guardarClienteEnBD(Cliente $cliente) {
+        $conexion = Conexion::obtenerInstancia()->obtenerConexion();
+        $query = "INSERT INTO clientes (nombre, numero, num_pedidos) 
+                  VALUES (:nombre, :numero, :num_pedidos)";
+        $stmt = $conexion->prepare($query);
+        $stmt->bindParam(':nombre', $cliente->getNombre());
+        $stmt->bindParam(':numero', $cliente->getNumero());
+        $stmt->bindParam(':num_pedidos', $cliente->getNumPedidosEfectuados());
+        $stmt->execute();
     }
 
     private function buscarProductoPorNombre($nombre) {
