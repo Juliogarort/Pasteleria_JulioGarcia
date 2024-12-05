@@ -1,15 +1,20 @@
 <?php
 
-class Dulces {
-    // Atributos de Dulce
+abstract class Dulce implements Resumible {
     protected $nombre;
     protected $precio;
     protected $categoria;
 
-    // Constante IVA
-    const IVA = 21;
+    // Constante estática para el IVA
+    private static $IVA = 21;
 
-    // Constructor
+    /**
+     * Constructor de la clase Dulce
+     *
+     * @param string $nombre Nombre del dulce
+     * @param float $precio Precio del dulce
+     * @param string $categoria Categoría del dulce
+     */
     public function __construct($nombre, $precio, $categoria) {
         $this->nombre = $nombre;
         $this->precio = $precio;
@@ -29,21 +34,39 @@ class Dulces {
         return $this->categoria;
     }
 
-    // Método para mostrar la información
-    public function mostrarInformacion() {
-        $precioConIVA = $this->precio + ($this->precio * self::IVA / 100);
-        return "Dulce: $this->nombre, Precio: " . number_format($this->precio, 2) . "€, Precio con IVA: " . number_format($precioConIVA, 2) . "€, Categoría: $this->categoria";
-    }
-
-    // Método para mostrar el resumen
-    public function muestraResumen() {
-        return "Resumen - Dulce: $this->nombre, Precio: " . number_format($this->precio, 2) . "€";
-    }
-
-    // Método para obtener el IVA
+    // Método estático para obtener el IVA
     public static function getIVA() {
-        return self::IVA;
+        return self::$IVA;
     }
+
+    /**
+     * Método abstracto muestraResumen()
+     * 
+     * Forzamos a las clases hijas a implementar este método,
+     * ya que cada dulce tiene un resumen diferente.
+     */
+    abstract public function muestraResumen();
+
+    /**
+     * Método muestraInformacion()
+     * 
+     * Proporciona información básica del dulce. 
+     * Puede ser sobrescrito por las clases hijas.
+     */
+    public function mostrarInformacion() {
+        return "{$this->nombre} - Precio: {$this->precio}€";
+    }
+
+    /**
+     * Comentario sobre la abstracción de la clase:
+     * Al transformar esta clase en abstracta:
+     * - Evitamos que se creen instancias de Dulce directamente,
+     *   ya que esta clase representa un concepto genérico.
+     * - Forzamos a las clases hijas (Bollo, Chocolate, Tarta) 
+     *   a implementar el método abstracto `muestraResumen`.
+     * - Garantizamos que el diseño del sistema sea más robusto
+     *   y específico para las clases derivadas.
+     */
 }
 
 ?>

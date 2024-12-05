@@ -1,74 +1,74 @@
 <?php
 
-require_once 'Dulces.php';  // Asegurémonos de que la clase Dulces esté incluida
-require_once 'Cliente.php';  // Incluir la clase Cliente
+require_once 'Dulce.php'; // Clase abstracta Dulce
+require_once 'Bollo.php'; // Clase hija Bollo
+require_once 'Chocolate.php'; // Clase hija Chocolate
+require_once 'Tarta.php'; // Clase hija Tarta
+require_once 'Cliente.php'; // Clase Cliente
 
 class Pasteleria {
-    // Atributos de la clase Pastelería
-    private $productos = []; // Array de productos (Dulces)
-    private $clientes = [];  // Array de clientes
+    private $productos = [];  // Array de productos (Dulces)
+    private $clientes = [];   // Array de clientes
 
-    // Método público para agregar un bollo a la pastelería
     public function agregarBollo($nombre, $precio, $categoria, $relleno) {
         $bollo = new Bollo($nombre, $precio, $categoria, $relleno);
         $this->incluirProducto($bollo);
         echo "Bollo '{$nombre}' agregado a la pastelería.\n";
     }
 
-    // Método público para agregar un chocolate a la pastelería
     public function agregarChocolate($nombre, $precio, $categoria, $porcentajeCacao, $peso) {
         $chocolate = new Chocolate($nombre, $precio, $categoria, $porcentajeCacao, $peso);
         $this->incluirProducto($chocolate);
         echo "Chocolate '{$nombre}' agregado a la pastelería.\n";
     }
 
-    // Método público para agregar una tarta a la pastelería
     public function agregarTarta($nombre, $precio, $categoria, $relleno, $pisos, $minComensales = 2, $maxComensales = 10) {
         $tarta = new Tarta($nombre, $precio, $categoria, $relleno, $pisos, $minComensales, $maxComensales);
         $this->incluirProducto($tarta);
         echo "Tarta '{$nombre}' agregada a la pastelería.\n";
     }
 
-    // Método privado para agregar el dulce al array de productos
-    private function incluirProducto(Dulces $dulce) {
+    private function incluirProducto(Dulce $dulce) {
         $this->productos[] = $dulce;
     }
 
-    // Método para mostrar todos los productos disponibles en la pastelería
     public function mostrarProductos() {
         echo "Productos disponibles en la pastelería:\n";
         foreach ($this->productos as $producto) {
-            echo $producto->mostrarInformacion() . "\n";
+            echo $producto->muestraResumen() . "\n";
         }
     }
 
-    // Método para mostrar todos los clientes registrados
+    public function agregarCliente($nombre, $numero) {
+        $cliente = new Cliente($nombre, $numero);
+        $this->clientes[] = $cliente;
+        echo "Cliente '{$nombre}' registrado en la pastelería.\n";
+    }
+
     public function mostrarClientes() {
         echo "Clientes registrados en la pastelería:\n";
         foreach ($this->clientes as $cliente) {
-            echo $cliente->mostrarInformacion() . "\n";
+            echo $cliente->muestraResumen() . "\n";
         }
     }
 
-    // Método para realizar un pedido por parte de un cliente
-    public function realizarPedido(Cliente $cliente, Dulces $dulce) {
-        // Verificar si el dulce está disponible en la pastelería
-        if ($this->verificarProducto($dulce)) {
-            // Si el cliente no ha comprado previamente, procedemos a realizar el pedido
+    public function realizarPedido(Cliente $cliente, $nombreDulce) {
+        $dulce = $this->buscarProductoPorNombre($nombreDulce);
+        if ($dulce) {
             $cliente->comprar($dulce);
+            echo "Pedido realizado: '{$cliente->getNombre()}' ha comprado '{$dulce->getNombre()}'.\n";
         } else {
-            echo "El dulce '{$dulce->getNombre()}' no está disponible en la pastelería.\n";
+            echo "El dulce '{$nombreDulce}' no está disponible en la pastelería.\n";
         }
     }
 
-    // Método para verificar si un dulce está en el catálogo de la pastelería
-    public function verificarProducto(Dulces $dulce) {
+    private function buscarProductoPorNombre($nombre) {
         foreach ($this->productos as $producto) {
-            if ($producto->getNombre() === $dulce->getNombre()) {
-                return true;  // El producto está disponible
+            if ($producto->getNombre() === $nombre) {
+                return $producto;
             }
         }
-        return false;  // El producto no está disponible
+        return null; // Si no se encuentra el producto
     }
 }
 

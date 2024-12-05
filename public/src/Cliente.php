@@ -1,22 +1,27 @@
 <?php
 
-require_once 'Dulces.php';  // Asegurémonos de que la clase Dulces esté incluida
+require_once 'Resumible.php'; // Asegúrate de incluir la interfaz Resumible
 
-class Cliente {
-    // Atributos de la clase Cliente
+class Cliente implements Resumible {
     private $nombre;
     private $numero;
     private $numPedidosEfectuados;
-    private $dulcesComprados; // Array para almacenar objetos de tipo Dulce
-    private $comentarios;     // Array para almacenar comentarios de los dulces
+    private $dulcesComprados; // Array para almacenar los dulces comprados
+    private $comentarios;     // Array para almacenar los comentarios de los dulces
 
-    // Constructor
+    /**
+     * Constructor de la clase Cliente
+     *
+     * @param string $nombre Nombre del cliente
+     * @param string $numero Número de teléfono del cliente
+     * @param int $numPedidosEfectuados Número de pedidos realizados
+     */
     public function __construct($nombre, $numero, $numPedidosEfectuados = 0) {
         $this->nombre = $nombre;
         $this->numero = $numero;
         $this->numPedidosEfectuados = $numPedidosEfectuados;
-        $this->dulcesComprados = [];  // Inicializar el array vacío
-        $this->comentarios = [];      // Inicializar el array de comentarios
+        $this->dulcesComprados = [];
+        $this->comentarios = [];
     }
 
     // Métodos getter
@@ -32,95 +37,80 @@ class Cliente {
         return $this->numPedidosEfectuados;
     }
 
-    public function getDulcesComprados() {
-        return $this->dulcesComprados;
-    }
-
-    // Métodos setter
-    public function setNombre($nombre) {
-        $this->nombre = $nombre;
-    }
-
-    public function setNumero($numero) {
-        $this->numero = $numero;
-    }
-
-    public function setNumPedidosEfectuados($numPedidosEfectuados) {
-        $this->numPedidosEfectuados = $numPedidosEfectuados;
-    }
-
-    // Método para incrementar el número de pedidos efectuados
-    public function incrementarPedidos() {
+    private function incrementarPedidos() {
         $this->numPedidosEfectuados++;
     }
 
-    // Método para agregar un dulce al array de dulcesComprados
-    public function agregarDulce(Dulces $dulce) {
+    /**
+     * Agrega un dulce al cliente
+     * 
+     * @param Dulce $dulce Objeto Dulce que el cliente ha comprado
+     */
+    public function agregarDulce(Dulce $dulce) {
         $this->dulcesComprados[] = $dulce;
-        $this->incrementarPedidos(); // Aumenta el contador de pedidos por cada dulce comprado
+        $this->incrementarPedidos();
     }
 
-    // Método para mostrar la información del cliente
-    public function mostrarInformacion() {
-        return "Cliente: $this->nombre, Número: $this->numero, Pedidos Efectuados: $this->numPedidosEfectuados";
-    }
-
-    // Método para mostrar los dulces comprados
-    public function mostrarDulcesComprados() {
-        $dulces = [];
-        foreach ($this->dulcesComprados as $dulce) {
-            $dulces[] = $dulce->mostrarInformacion();  // Mostrar información de cada dulce
-        }
-        return implode("\n", $dulces);  // Devolver todos los dulces en formato string
-    }
-
-    // Método para mostrar un resumen del cliente
-    public function muestraResumen() {
-        return "Cliente: $this->nombre, Cantidad de Pedidos: " . $this->numPedidosEfectuados;
-    }
-
-    // Método listaDeDulces
-    public function listaDeDulces(Dulces $dulce) {
-        // Recorre el array de dulcesComprados y comprueba si el dulce está presente
-        foreach ($this->dulcesComprados as $dulceComprado) {
-            // Compara los dulces (utilizamos el método getNombre de la clase Dulces para comparar)
-            if ($dulceComprado->getNombre() === $dulce->getNombre()) {
-                return true;  // El dulce ya está comprado
-            }
-        }
-        return false;  // El dulce no está en la lista
-    }
-
-    // Método comprar
-    public function comprar(Dulces $dulce) {
-        // Comprobamos si el dulce ya está en el array
+    /**
+     * Realiza una compra de un dulce
+     * 
+     * @param Dulce $dulce Objeto Dulce que se compra
+     */
+    public function comprar(Dulce $dulce) {
         if ($this->listaDeDulces($dulce)) {
             echo "El dulce '{$dulce->getNombre()}' ya ha sido comprado previamente.\n";
         } else {
-            // Si el dulce no estaba en la lista, lo agregamos y aumentamos el contador de pedidos
             $this->agregarDulce($dulce);
-            echo "Compra realizada: Se ha añadido '{$dulce->getNombre()}' a tu lista de compras.\n";
+            echo "Compra realizada: '{$dulce->getNombre()}' agregado a tu lista de compras.\n";
         }
     }
 
-    // Método valorar
-    public function valorar(Dulces $dulce, $comentario) {
-        // Verificamos si el dulce ya ha sido comprado por el cliente
+    /**
+     * Verifica si el cliente ya ha comprado un dulce
+     * 
+     * @param Dulce $dulce Objeto Dulce
+     * @return bool Verdadero si ya se compró, falso si no
+     */
+    private function listaDeDulces(Dulce $dulce) {
+        foreach ($this->dulcesComprados as $dulceComprado) {
+            if ($dulceComprado->getNombre() === $dulce->getNombre()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Permite valorar un dulce que ya ha sido comprado
+     * 
+     * @param Dulce $dulce Objeto Dulce que el cliente valora
+     * @param string $comentario Comentario sobre el dulce
+     */
+    public function valorar(Dulce $dulce, $comentario) {
         if ($this->listaDeDulces($dulce)) {
-            // Si ya lo compró, almacenamos el comentario
             $this->comentarios[$dulce->getNombre()] = $comentario;
-            echo "Comentario sobre '{$dulce->getNombre()}': '$comentario'\n";
+            echo "Comentario registrado: '{$comentario}' sobre el dulce '{$dulce->getNombre()}'.\n";
         } else {
-            echo "No se puede valorar '{$dulce->getNombre()}', ya que no ha sido comprado aún.\n";
+            echo "No puedes valorar el dulce '{$dulce->getNombre()}', ya que no lo has comprado.\n";
         }
     }
 
-    // Método listarPedidos
+    /**
+     * Método para mostrar un resumen del cliente
+     *
+     * @return string Resumen de los datos del cliente
+     */
+    public function muestraResumen() {
+        return "Cliente: {$this->nombre}, Número: {$this->numero}, Pedidos: {$this->numPedidosEfectuados}";
+    }
+
+    /**
+     * Lista todos los pedidos realizados por el cliente
+     */
     public function listarPedidos() {
-        echo "Total de pedidos efectuados: " . $this->numPedidosEfectuados . "\n";
-        echo "Detalles de los pedidos:\n";
-        foreach ($this->dulcesComprados as $index => $dulce) {
-            echo "Pedido " . ($index + 1) . ": " . $dulce->getNombre() . "\n";
+        echo "Pedidos de '{$this->nombre}':\n";
+        foreach ($this->dulcesComprados as $dulce) {
+            echo "- {$dulce->getNombre()}\n";
         }
     }
 }
