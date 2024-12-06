@@ -29,3 +29,27 @@ CREATE TABLE IF NOT EXISTS pedidos (
     FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE,
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 );
+
+-- Insertar clientes
+INSERT INTO clientes (nombre, usuario, contraseña) 
+VALUES ('Administrador', 'admin', 'admin'),
+       ('Oc', 'usuario', 'usuario');
+
+-- Insertar productos (dulces)
+INSERT INTO productos (nombre, precio, categoria, tipo, relleno) 
+VALUES 
+    ('Tarta de chocolate', 20.00, 'Tartas', 'Tarta', 'Chocolate'),
+    ('Galletas de avena', 5.00, 'Galletas', 'Galleta', 'Avena'),
+    ('Bollo de crema', 3.50, 'Bollos', 'Bollo', 'Crema'),
+    ('Chocolate amargo', 2.00, 'Chocolate', 'Chocolate', 'Amargo'),
+    ('Tarta de frutas', 25.00, 'Tartas', 'Tarta', 'Frutas');
+
+
+-- Verificar los clientes insertados
+SELECT * FROM clientes;
+
+-- Verificar los productos insertados
+SELECT * FROM productos;
+
+-- Verificar los pedidos
+SELECT * FROM pedidos;

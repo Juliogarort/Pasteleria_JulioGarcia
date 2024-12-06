@@ -69,14 +69,14 @@ class Pasteleria {
         }
     }
 
-    public function agregarCliente($nombre, $numero) {
+    public function agregarCliente($nombre, $numero, $username, $password) {
         try {
             foreach ($this->clientes as $cliente) {
                 if ($cliente->getNumero() === $numero) {
                     throw new PasteleriaException("El cliente con número '{$numero}' ya está registrado.");
                 }
             }
-            $cliente = new Cliente($nombre, $numero);
+            $cliente = new Cliente($nombre, $numero, $username, $password); // Aquí se agregan username y password
             $this->clientes[] = $cliente;
             $this->guardarClienteEnBD($cliente);
             echo "Cliente '{$nombre}' registrado en la pastelería.\n";
@@ -88,7 +88,7 @@ class Pasteleria {
     public function mostrarClientes() {
         echo "Clientes registrados en la pastelería:\n";
         foreach ($this->clientes as $cliente) {
-            echo $cliente->muestraResumen() . "\n";
+            echo $cliente->muestraResumen() . " - Usuario: " . $cliente->getUsername() . "\n"; // Mostrar username
         }
     }
 
@@ -111,11 +111,12 @@ class Pasteleria {
     // Guardar el cliente en la base de datos
     private function guardarClienteEnBD(Cliente $cliente) {
         $conexion = Conexion::obtenerInstancia()->obtenerConexion();
-        $query = "INSERT INTO clientes (nombre, numero, num_pedidos) 
-                  VALUES (:nombre, :numero, :num_pedidos)";
+        $query = "INSERT INTO clientes (nombre, numero, username, password, num_pedidos) 
+                  VALUES (:nombre, :numero, :username, :password, :num_pedidos)";
         $stmt = $conexion->prepare($query);
         $stmt->bindParam(':nombre', $cliente->getNombre());
         $stmt->bindParam(':numero', $cliente->getNumero());
+        $stmt->bindParam(':username', $cliente->getUsername());
         $stmt->bindParam(':num_pedidos', $cliente->getNumPedidosEfectuados());
         $stmt->execute();
     }

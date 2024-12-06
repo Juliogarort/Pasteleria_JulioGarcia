@@ -11,17 +11,23 @@ class Cliente implements Resumible {
     private $numPedidosEfectuados;
     private $dulcesComprados; // Array para almacenar los dulces comprados
     private $comentarios;     // Array para almacenar los comentarios de los dulces
+    private $username;        // Nombre de usuario
+    private $password;        // Contraseña
 
     /**
      * Constructor de la clase Cliente
      *
      * @param string $nombre Nombre del cliente
      * @param string $numero Número de teléfono del cliente
+     * @param string $username Nombre de usuario
+     * @param string $password Contraseña
      * @param int $numPedidosEfectuados Número de pedidos realizados
      */
-    public function __construct($nombre, $numero, $numPedidosEfectuados = 0) {
+    public function __construct($nombre, $numero, $username, $password, $numPedidosEfectuados = 0) {
         $this->nombre = $nombre;
         $this->numero = $numero;
+        $this->username = $username;
+        $this->password = password_hash($password, PASSWORD_DEFAULT); // Hasheamos la contraseña por seguridad
         $this->numPedidosEfectuados = $numPedidosEfectuados;
         $this->dulcesComprados = [];
         $this->comentarios = [];
@@ -41,6 +47,14 @@ class Cliente implements Resumible {
 
     public function getNumPedidosEfectuados() {
         return $this->numPedidosEfectuados;
+    }
+
+    public function getUsername() {
+        return $this->username;
+    }
+
+    public function verificarPassword($password) {
+        return password_verify($password, $this->password); // Verificamos la contraseña con la función password_verify
     }
 
     private function incrementarPedidos() {
@@ -133,11 +147,13 @@ class Cliente implements Resumible {
     // Guardar el cliente en la base de datos
     private function guardarClienteEnBD() {
         $conexion = Conexion::obtenerInstancia()->obtenerConexion();
-        $query = "INSERT INTO clientes (nombre, numero, num_pedidos) 
-                  VALUES (:nombre, :numero, :num_pedidos)";
+        $query = "INSERT INTO clientes (nombre, numero, username, password, num_pedidos) 
+                  VALUES (:nombre, :numero, :username, :password, :num_pedidos)";
         $stmt = $conexion->prepare($query);
         $stmt->bindParam(':nombre', $this->nombre);
         $stmt->bindParam(':numero', $this->numero);
+        $stmt->bindParam(':username', $this->username);
+        $stmt->bindParam(':password', $this->password);
         $stmt->bindParam(':num_pedidos', $this->numPedidosEfectuados);
         $stmt->execute();
     }
