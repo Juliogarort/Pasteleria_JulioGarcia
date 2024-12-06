@@ -1,36 +1,43 @@
 <?php
-session_start();
+require_once 'public/util/Conexion.php';
 
-// Obtener los datos del formulario
-$username = $_POST['username'] ?? '';
-$password = $_POST['password'] ?? '';
+// Recibimos los datos del formulario por POST
+$usuario = $_POST['usuario'] ?? null;
+$contraseña = $_POST['contraseña'] ?? null;
 
-// Verificar credenciales
-if ($username === 'admin' && $password === 'admin') {
-    $_SESSION['username'] = 'admin';
+if ($usuario && $contraseña) {
+    try {
+        // Conexión a la base de datos
+        $conexion = Conexion::obtenerInstancia()->obtenerConexion();
 
-    // Simulación de datos para el administrador
-    $_SESSION['dulces'] = [
-        ['tipo' => 'Tarta', 'nombre' => 'Tarta de chocolate', 'precio' => 20],
-        ['tipo' => 'Galleta', 'nombre' => 'Galletas de avena', 'precio' => 5],
-    ];
-    $_SESSION['clientes'] = [
-        ['nombre' => 'Oc Modus', 'telefono' => '666666666'],
-        ['nombre' => 'Jimmy no Fear', 'telefono' => '555555555'],
-    ];
+        // Consulta para buscar el usuario
+        $query = "SELECT * FROM clientes WHERE usuario = :usuario";
+        $stmt = $conexion->prepare($query);
 
-    // Redirigir a mainAdmin.php
-    header("Location: mainAdmin.php");
-    exit();
-} elseif ($username === 'usuario' && $password === 'usuario') {
-    $_SESSION['username'] = 'usuario';
+        // Vincular los valores de los parámetros
+        $stmt->bindValue(':usuario', $usuario);
 
-    // Redirigir a main.php
-    header("Location: main.php");
-    exit();
+        // Ejecutar la consulta
+        $stmt->execute();
+
+        // Comprobar si encontramos el usuario
+        $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($cliente) {
+            // Comparar la contraseña directamente (sin cifrado)
+            if ($contraseña === $cliente['contraseña']) {
+                echo "Bienvenido, {$cliente['nombre']}!";
+                // Aquí podrías redirigir o iniciar sesión para el usuario
+            } else {
+                echo "Contraseña incorrecta.";
+            }
+        } else {
+            echo "Usuario no encontrado.";
+        }
+    } catch (PDOException $e) {
+        echo "Error al conectar con la base de datos: " . $e->getMessage();
+    }
 } else {
-    // Credenciales incorrectas, redirigir al login con mensaje de error
-    header("Location: index.php?error=Usuario o contraseña incorrectos.");
-    exit();
+    echo "Por favor, introduce usuario y contraseña.";
 }
 ?>

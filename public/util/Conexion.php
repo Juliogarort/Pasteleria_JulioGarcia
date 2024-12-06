@@ -41,7 +41,7 @@ class Conexion {
     private function __clone() {}
 
     // Evitar la deserialización
-    private function __wakeup() {}
+    public function __wakeup() {}
 }
 
 ?>
