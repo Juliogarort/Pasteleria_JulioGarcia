@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS clientes (
     contraseña VARCHAR(255) NOT NULL
 );
 
+
 -- Creación tabla de pedidos
 CREATE TABLE IF NOT EXISTS pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -33,16 +34,21 @@ CREATE TABLE IF NOT EXISTS pedidos (
 -- Insertar clientes
 INSERT INTO clientes (nombre, usuario, contraseña) 
 VALUES ('admin', 'admin', 'admin'),
-       ('Oc', 'usuario', 'usuario');
+       ('Olga', 'usuario', 'usuario');
 
 -- Insertar productos (dulces)
 INSERT INTO productos (nombre, precio, categoria, tipo, relleno) 
 VALUES 
-    ('Tarta de chocolate', 20.00, 'Tartas', 'Tarta', 'Chocolate'),
-    ('Galletas de avena', 5.00, 'Galletas', 'Galleta', 'Avena'),
-    ('Bollo de crema', 3.50, 'Bollos', 'Bollo', 'Crema'),
+    ('Tarta chocolate', 20.00, 'Tartas', 'Tarta', 'Chocolate'),
+	('Croissant', 2.50, 'Pasteles', 'Croissant', 'Nutella'),
+    ('Polvorones', 5.50, 'Galletas', 'Polvorón', 'Leche condensada'),
+    ('Churros chocolate', 6.00, 'Fogones', 'Churro', 'Chocolate'),
+    ('Galletas avena', 5.00, 'Galletas', 'Galleta', 'Avena'),
+    ('Bollo crema', 3.50, 'Bollos', 'Bollo', 'Crema'),
+    ('Palmera crema', 3.50, 'Pasteles', 'Palmera', 'Crema'),
+    ('Palmera chocolate', 3.75, 'Pasteles', 'Palmera', 'Chocolate'),
     ('Chocolate amargo', 2.00, 'Chocolate', 'Chocolate', 'Amargo'),
-    ('Tarta de frutas', 25.00, 'Tartas', 'Tarta', 'Frutas');
+    ('Tarta frutas', 25.00, 'Tartas', 'Tarta', 'Frutas');
 
 
 -- Verificar los clientes insertados
