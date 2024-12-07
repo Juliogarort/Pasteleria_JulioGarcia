@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS pedidos (
 
 -- Insertar clientes
 INSERT INTO clientes (nombre, usuario, contraseña) 
-VALUES ('admin', 'admin', 'admin'),
+VALUES ('Oc', 'admin', 'admin'),
        ('Olga', 'usuario', 'usuario');
 
 -- Insertar productos (dulces)

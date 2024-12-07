@@ -39,7 +39,6 @@ $stmtClientes->execute();
 
 // Recuperar los clientes
 $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
@@ -48,8 +47,12 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenido Admin</title>
+    <link rel="stylesheet" href="public/css/style.css">
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <!-- Header -->
@@ -60,13 +63,16 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
 
         <div class="d-flex align-items-center">
             <span class="fs-6 me-3">Bienvenido, <?= htmlspecialchars($usuario); ?>!</span>
+            <!-- Carrito de compra con Font Awesome -->
+            <a href="cart.php" class="btn btn-outline-dark me-3">
+                <i class="fa-solid fa-cart-shopping"></i> Carrito
+            </a>
             <a href="logout.php" class="btn btn-danger">Cerrar sesión</a>
         </div>
     </header>
 
     <div class="container mt-5">
-
-
+        <!-- Dulces Disponibles -->
         <h3 class="mt-4">Dulces Disponibles:</h3>
         <div class="row">
             <?php if (empty($dulces)): ?>
@@ -87,23 +93,25 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </div>
 
+        <!-- Clientes Registrados -->
         <h3 class="mt-4">Clientes Registrados:</h3>
-        <ul class="list-group">
+        <div class="row">
             <?php 
             if (empty($clientes)) {
-                echo "<li class='list-group-item'>No hay clientes registrados.</li>";
+                echo "<p>No hay clientes registrados.</p>";
             } else {
                 foreach ($clientes as $cliente): 
             ?>
-                <li class="list-group-item">
-                    <?php echo "{$cliente['nombre']} - Usuario: {$cliente['usuario']} "; ?>
-                </li>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo htmlspecialchars($cliente['nombre']); ?></h5>
+                            <p class="card-text"><strong>Usuario: </strong><?php echo htmlspecialchars($cliente['usuario']); ?></p>
+                        </div>
+                    </div>
+                </div>
             <?php endforeach; 
             } ?>
-        </ul>
-
-        <div class="text-center mt-4">
-            <a href="logout.php" class="btn btn-danger">Cerrar Sesión</a>
         </div>
     </div>
 
