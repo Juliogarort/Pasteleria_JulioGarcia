@@ -52,6 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['producto_id'])) {
 
 // Obtener la cantidad de artículos en el carrito para el usuario actual
 $contadorCarrito = 0;
+$productosCarrito = [];
+$totalCarrito = 0;
+
 if (isset($_SESSION['usuario'])) {
     $usuario = $_SESSION['usuario'];
     // Obtener el cliente_id del usuario logueado
@@ -64,12 +67,18 @@ if (isset($_SESSION['usuario'])) {
     if ($cliente) {
         $cliente_id = $cliente['id'];
         // Contar la cantidad total de productos en el carrito
-        $sqlCarrito = "SELECT SUM(cantidad) AS cantidad_total FROM pedidos WHERE cliente_id = :cliente_id";
+        $sqlCarrito = "SELECT p.nombre, p.precio, pe.cantidad, p.id FROM pedidos pe
+                       JOIN productos p ON pe.producto_id = p.id
+                       WHERE pe.cliente_id = :cliente_id";
         $stmtCarrito = $conexion->prepare($sqlCarrito);
         $stmtCarrito->bindParam(':cliente_id', $cliente_id);
         $stmtCarrito->execute();
-        $carrito = $stmtCarrito->fetch(PDO::FETCH_ASSOC);
-        $contadorCarrito = $carrito['cantidad_total'] ? $carrito['cantidad_total'] : 0;
+        $productosCarrito = $stmtCarrito->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($productosCarrito as $producto) {
+            $contadorCarrito += $producto['cantidad'];
+            $totalCarrito += $producto['precio'] * $producto['cantidad'];
+        }
     }
 }
 ?>
@@ -91,12 +100,12 @@ if (isset($_SESSION['usuario'])) {
         </a>
         <div class="d-flex align-items-center">
             <span class="fs-6 me-3">Bienvenido, <?= htmlspecialchars($_SESSION['usuario']); ?>!</span>
-            <a href="cart.php" class="btn btn-outline-dark me-3">
+            <button class="btn btn-outline-dark me-3" data-bs-toggle="modal" data-bs-target="#cartModal">
                 <i class="fa-solid fa-cart-shopping"></i> Carrito 
                 <?php if ($contadorCarrito > 0): ?>
                     <span class="badge bg-primary"><?= $contadorCarrito; ?></span>
                 <?php endif; ?>
-            </a>
+            </button>
             <a href="logout.php" class="btn btn-danger">Cerrar sesión</a>
         </div>
     </header>
@@ -124,6 +133,39 @@ if (isset($_SESSION['usuario'])) {
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Modal del Carrito -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartModalLabel">Tu Carrito de Compra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <?php if (empty($productosCarrito)): ?>
+                        <p>No tienes productos en el carrito.</p>
+                    <?php else: ?>
+                        <ul class="list-group">
+                            <?php foreach ($productosCarrito as $producto): ?>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <?= htmlspecialchars($producto['nombre']); ?> x <?= $producto['cantidad']; ?>
+                                    <span class="badge bg-primary"><?= number_format($producto['precio'] * $producto['cantidad'], 2); ?>€</span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <div class="mt-3 text-end">
+                            <h5>Total: <?= number_format($totalCarrito, 2); ?>€</h5>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <a href="checkout.php" class="btn btn-primary">Finalizar Compra</a>
+                </div>
+            </div>
         </div>
     </div>
 

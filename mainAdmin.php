@@ -62,10 +62,7 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
 
         <div class="d-flex align-items-center">
             <span class="fs-6 me-3">Bienvenido, <?= htmlspecialchars($usuario); ?>!</span>
-            <!-- Carrito de compra con Font Awesome -->
-            <a href="cart.php" class="btn btn-outline-dark me-3">
-                <i class="fa-solid fa-cart-shopping"></i> Carrito
-            </a>
+
             <a href="logout.php" class="btn btn-danger">Cerrar sesión</a>
         </div>
     </header>
