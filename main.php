@@ -12,7 +12,7 @@ require_once 'public/util/Conexion.php';
 $conexion = Conexion::obtenerInstancia()->obtenerConexion();
 
 // Consulta para obtener los dulces disponibles
-$sql = "SELECT id, nombre, precio, categoria FROM productos";
+$sql = "SELECT id, nombre, precio, categoria, imagen FROM productos";
 $stmt = $conexion->prepare($sql);
 $stmt->execute();
 
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['producto_id'])) {
         if ($cliente) {
             $cliente_id = $cliente['id'];
             $producto_id = $_POST['producto_id'];
-            $cantidad = 1; // Puede ser ampliado para permitir elegir la cantidad
+            $cantidad = 1;
 
             // Insertar el pedido en la tabla de pedidos
             $sqlPedido = "INSERT INTO pedidos (cliente_id, producto_id, cantidad) VALUES (:cliente_id, :producto_id, :cantidad)";
@@ -49,6 +49,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['producto_id'])) {
         }
     }
 }
+
+// Obtener la cantidad de artículos en el carrito para el usuario actual
+$contadorCarrito = 0;
+if (isset($_SESSION['usuario'])) {
+    $usuario = $_SESSION['usuario'];
+    // Obtener el cliente_id del usuario logueado
+    $sqlUsuario = "SELECT id FROM clientes WHERE usuario = :usuario";
+    $stmtUsuario = $conexion->prepare($sqlUsuario);
+    $stmtUsuario->bindParam(':usuario', $usuario);
+    $stmtUsuario->execute();
+    $cliente = $stmtUsuario->fetch(PDO::FETCH_ASSOC);
+
+    if ($cliente) {
+        $cliente_id = $cliente['id'];
+        // Contar la cantidad total de productos en el carrito
+        $sqlCarrito = "SELECT SUM(cantidad) AS cantidad_total FROM pedidos WHERE cliente_id = :cliente_id";
+        $stmtCarrito = $conexion->prepare($sqlCarrito);
+        $stmtCarrito->bindParam(':cliente_id', $cliente_id);
+        $stmtCarrito->execute();
+        $carrito = $stmtCarrito->fetch(PDO::FETCH_ASSOC);
+        $contadorCarrito = $carrito['cantidad_total'] ? $carrito['cantidad_total'] : 0;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -59,30 +82,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['producto_id'])) {
     <title>Bienvenido a la Pastelería</title>
     <link rel="stylesheet" href="public/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Header -->
     <header class="container d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
-        <!-- Nombre de la pastelería -->
         <a href="#" class="d-flex align-items-center text-dark text-decoration-none">
             <span class="fs-4">Pastelería Julio García</span>
         </a>
-
-        <!-- Sección de bienvenida, carrito de compras y botón de cerrar sesión -->
         <div class="d-flex align-items-center">
             <span class="fs-6 me-3">Bienvenido, <?= htmlspecialchars($_SESSION['usuario']); ?>!</span>
-            <!-- Carrito de la compra -->
             <a href="cart.php" class="btn btn-outline-dark me-3">
-                <i class="fa-solid fa-cart-shopping"></i> Carrito
+                <i class="fa-solid fa-cart-shopping"></i> Carrito 
+                <?php if ($contadorCarrito > 0): ?>
+                    <span class="badge bg-primary"><?= $contadorCarrito; ?></span>
+                <?php endif; ?>
             </a>
             <a href="logout.php" class="btn btn-danger">Cerrar sesión</a>
         </div>
     </header>
 
     <div class="container mt-5">
-        <!-- Sección de dulces -->
         <h3 class="mb-4">Nuestros Dulces</h3>
         <div class="row">
             <?php if (empty($dulces)): ?>
@@ -91,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['producto_id'])) {
                 <?php foreach ($dulces as $dulce): ?>
                     <div class="col-md-4 mb-4">
                         <div class="card">
-                            <img src="https://via.placeholder.com/150" class="card-img-top" alt="Imagen del dulce">
+                            <img src="<?= htmlspecialchars($dulce['imagen']); ?>" class="card-img-top" alt="Imagen de <?= htmlspecialchars($dulce['nombre']); ?>">
                             <div class="card-body">
                                 <h5 class="card-title"><?= htmlspecialchars($dulce['nombre']); ?></h5>
                                 <p class="card-text"><?= htmlspecialchars($dulce['categoria']); ?></p>

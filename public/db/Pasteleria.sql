@@ -2,17 +2,16 @@ DROP DATABASE IF EXISTS Pasteleria;
 CREATE DATABASE IF NOT EXISTS Pasteleria;
 USE Pasteleria;
 
--- Creación tabla de productos
 CREATE TABLE IF NOT EXISTS productos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     precio DECIMAL(10, 2) NOT NULL,
     categoria VARCHAR(255),
-    tipo VARCHAR(50), -- Nueva columna para el tipo de dulce
-    relleno VARCHAR(255) -- Nueva columna para el relleno (si aplica)
+    tipo VARCHAR(50),
+    relleno VARCHAR(255),
+    imagen VARCHAR(255)
 );
 
--- Creación tabla de clientes
 CREATE TABLE IF NOT EXISTS clientes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
@@ -20,8 +19,6 @@ CREATE TABLE IF NOT EXISTS clientes (
     contraseña VARCHAR(255) NOT NULL
 );
 
-
--- Creación tabla de pedidos
 CREATE TABLE IF NOT EXISTS pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     cliente_id INT NOT NULL,
@@ -31,24 +28,22 @@ CREATE TABLE IF NOT EXISTS pedidos (
     FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE CASCADE
 );
 
--- Insertar clientes
 INSERT INTO clientes (nombre, usuario, contraseña) 
 VALUES ('Oc', 'admin', 'admin'),
        ('Olga', 'usuario', 'usuario');
 
--- Insertar productos (dulces)
-INSERT INTO productos (nombre, precio, categoria, tipo, relleno) 
+INSERT INTO productos (nombre, precio, categoria, tipo, relleno, imagen) 
 VALUES 
-    ('Tarta chocolate', 20.00, 'Tartas', 'Tarta', 'Chocolate'),
-	('Croissant', 2.50, 'Pasteles', 'Croissant', 'Nutella'),
-    ('Polvorones', 5.50, 'Galletas', 'Polvorón', 'Leche condensada'),
-    ('Churros chocolate', 6.00, 'Fogones', 'Churro', 'Chocolate'),
-    ('Galletas avena', 5.00, 'Galletas', 'Galleta', 'Avena'),
-    ('Bollo crema', 3.50, 'Bollos', 'Bollo', 'Crema'),
-    ('Palmera crema', 3.50, 'Pasteles', 'Palmera', 'Crema'),
-    ('Palmera chocolate', 3.75, 'Pasteles', 'Palmera', 'Chocolate'),
-    ('Chocolate amargo', 2.00, 'Chocolate', 'Chocolate', 'Amargo'),
-    ('Tarta frutas', 25.00, 'Tartas', 'Tarta', 'Frutas');
+    ('Tarta chocolate', 20.00, 'Tartas', 'Tarta', 'Chocolate', '/Pasteleria_JulioGarcia/public/img/tarta-chocolate.jpg'),
+    ('Croissant', 2.50, 'Pasteles', 'Croissant', 'Nutella', '/Pasteleria_JulioGarcia/public/img/Croisant.jpg'),
+    ('Polvorones', 5.50, 'Galletas', 'Polvorón', 'Leche condensada', '/Pasteleria_JulioGarcia/public/img/polvorones.jpg'),
+    ('Churros chocolate', 6.00, 'Fogones', 'Churro', 'Chocolate', '/Pasteleria_JulioGarcia/public/img/churros.jpg'),
+    ('Galletas avena', 5.00, 'Galletas', 'Galleta', 'Avena', '/Pasteleria_JulioGarcia/public/img/galletas.jpg'),
+    ('Bollo crema', 3.50, 'Bollos', 'Bollo', 'Crema', '/Pasteleria_JulioGarcia/public/img/bollocrema.jpg'),
+    ('Palmera crema', 3.50, 'Pasteles', 'Palmera', 'Crema', '/Pasteleria_JulioGarcia/public/img/palmeracrema.jpg'),
+    ('Palmera chocolate', 3.75, 'Pasteles', 'Palmera', 'Chocolate', '/Pasteleria_JulioGarcia/public/img/palmerachocolate.jpg'),
+    ('Chocolate amargo', 2.00, 'Chocolate', 'Chocolate', 'Amargo', '/Pasteleria_JulioGarcia/public/img/chocolateamargo.jpg');
+
 
 
 -- Verificar los clientes insertados

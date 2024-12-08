@@ -16,8 +16,7 @@ require_once 'public/util/Conexion.php';
 // Obtener la conexión
 $conexion = Conexion::obtenerInstancia()->obtenerConexion();
 
-// Consulta para obtener los productos disponibles
-$sql = "SELECT nombre, precio, tipo FROM productos";
+$sql = "SELECT id, nombre, precio, categoria, imagen FROM productos";
 $stmt = $conexion->prepare($sql);
 $stmt->execute();
 
@@ -80,15 +79,22 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
             <?php else: ?>
                 <?php foreach ($dulces as $dulce): ?>
                     <div class="col-md-4 mb-4">
-                        <div class="card">
-                            <img src="https://via.placeholder.com/150" class="card-img-top" alt="Imagen del dulce">
-                            <div class="card-body">
-                                <h5 class="card-title"><?php echo htmlspecialchars($dulce['nombre']); ?></h5>
-                                <p class="card-text"><?php echo htmlspecialchars($dulce['tipo']); ?></p>
-                                <p class="card-text"><strong>Precio: <?php echo number_format($dulce['precio'], 2); ?>€</strong></p>
-                            </div>
-                        </div>
-                    </div>
+    <div class="card">
+        <img src="<?= htmlspecialchars($dulce['imagen']); ?>" class="card-img-top" alt="Imagen de <?= htmlspecialchars($dulce['nombre']); ?>">
+        <div class="card-body">
+            <h5 class="card-title"><?= htmlspecialchars($dulce['nombre']); ?></h5>
+            <p class="card-text"><?= htmlspecialchars($dulce['categoria']); ?></p>
+            <p class="card-text"><strong>Precio: <?= number_format($dulce['precio'], 2); ?>€</strong></p>
+            
+            <!-- Botón de eliminar -->
+            <form action="eliminar.php" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este producto?');">
+                <input type="hidden" name="id_producto" value="<?= $dulce['id']; ?>">
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
