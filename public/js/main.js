@@ -18,5 +18,3 @@ passwordInput.addEventListener('input', () => {
         submitBtn.disabled = true;
     }
 });
-
-

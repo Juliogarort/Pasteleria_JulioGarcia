@@ -125,7 +125,8 @@ if (isset($_SESSION['usuario'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenido a la Pastelería</title>
-    
+    <link rel="icon" href="public/img/JGO_LogoN.png" type="image/x-icon">
+
     <!-- Vincular archivo CSS -->
     <link rel="stylesheet" href="public/css/style.css">
 
@@ -147,6 +148,7 @@ if (isset($_SESSION['usuario'])) {
 <body>
     <header class="container d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
         <a href="#" class="d-flex align-items-center text-dark text-decoration-none">
+        <img src="public/img/JGO_LogoN.png" alt="Logo de la pastelería" class="img-fluid me-2" width="40" height="40">
         <span class="fs-4">Pastelería Julio García</span>
         </a>
         <div class="d-flex align-items-center">
@@ -158,9 +160,8 @@ if (isset($_SESSION['usuario'])) {
                 <?php endif; ?>
             </button>
             <a href="logout.php" class="btn btn-danger">Cerrar sesión</a>
-
             <!-- Botón para cambiar entre modo claro y oscuro -->
-            <button id="theme-toggle" class="btn btn-outline-dark">
+            <button id="theme-toggle" class="btn btn-outline-dark mx-2">
                 <i id="theme-icon" class="fas fa-sun"></i>
             </button>
         </div>
@@ -183,7 +184,7 @@ if (isset($_SESSION['usuario'])) {
                                 <p class="card-text"><strong>Precio: <?= number_format($dulce['precio'], 2); ?>€</strong></p>
                                 <form action="<?= $_SERVER['PHP_SELF']; ?>" method="POST">
                                     <input type="hidden" name="producto_id" value="<?= $dulce['id']; ?>">
-                                    <button type="submit" class="btn btn-primary">Añadir al carrito</button>
+                                    <button id="carrito" type="submit" class="btn btn-primary">Añadir al carrito</button>
                                 </form>
                             </div>
                         </div>

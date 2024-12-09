@@ -91,17 +91,4 @@ body.dark-theme .fs-4 {
     color: #ffffff;
 }
 
-body.dark-theme a:hover {
-    color: #a0cfff;
-}
-
-body.dark-theme .btn-danger {
-    background-color: #b52b2b;
-    border-color: #b52b2b;
-    color: white;
-}
-
-body.dark-theme .btn-danger:hover {
-    background-color: #991f1f;
-}
 
