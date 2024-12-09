@@ -23,20 +23,22 @@ if ($nombre && $usuario && $contraseña) {
 
             // Iniciar sesión y redirigir a main.php
             session_start();
-            $_SESSION['usuario'] = $usuario; // Guardar el usuario en la sesión
+            $_SESSION['usuario'] = $usuario;
             header("Location: main.php");
-            exit; // Detener la ejecución después de la redirección
+            exit;
         } else {
-            echo "La contraseña debe contener al menos una letra y un número.";
+            header("Location: index2.php?error=La contraseña debe contener al menos una letra y un número.");
+            exit;
         }
     } catch (PDOException $e) {
         if ($e->getCode() == 23000) {
-            echo "El usuario ya existe.";
+            header("Location: index2.php?error=El usuario ya existe.");
         } else {
-            echo "Error: " . $e->getMessage();
+            header("Location: index2.php?error=Error en el servidor. Intenta más tarde.");
         }
+        exit;
     }
 } else {
-    echo "Por favor, completa todos los campos.";
+    header("Location: index2.php?error=Por favor, completa todos los campos.");
+    exit;
 }
-?>

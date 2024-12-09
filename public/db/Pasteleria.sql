@@ -53,4 +53,11 @@ SELECT * FROM clientes;
 SELECT * FROM productos;
 
 -- Verificar los pedidos
-SELECT * FROM pedidos;
+SELECT 
+    p.id AS pedido_id, 
+    c.nombre AS cliente, 
+    pr.nombre AS producto, 
+    p.cantidad
+FROM pedidos p
+JOIN clientes c ON p.cliente_id = c.id
+JOIN productos pr ON p.producto_id = pr.id;
