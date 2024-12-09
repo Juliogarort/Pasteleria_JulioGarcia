@@ -194,40 +194,56 @@ if (isset($_SESSION['usuario'])) {
     </div>
 
     <!-- Modal del Carrito -->
-    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cartModalLabel">Tu Carrito de Compra</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <?php if (empty($productosCarrito)): ?>
-                        <p>No tienes productos en el carrito.</p>
-                    <?php else: ?>
-                        <ul class="list-group">
-                            <?php foreach ($productosCarrito as $producto): ?>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span class="me-3"><?= htmlspecialchars($producto['producto_nombre']); ?> x <?= $producto['total_cantidad']; ?></span>
-                                    <div class="d-flex ms-auto align-items-center">
-                                        <span class="badge bg-primary me-2"><?= number_format($producto['precio'] * $producto['total_cantidad'], 2); ?>€</span>
-                                        <form action="<?= $_SERVER['PHP_SELF']; ?>" method="POST" class="d-inline">
-                                            <input type="hidden" name="eliminar_producto_id" value="<?= $producto['producto_id']; ?>">
-                                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                                        </form>
-                                    </div>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php endif; ?>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+<div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cartModalLabel">Tu Carrito de Compra</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <?php if (empty($productosCarrito)): ?>
+                    <p>No tienes productos en el carrito.</p>
+                <?php else: ?>
+                    <ul class="list-group">
+                        <?php foreach ($productosCarrito as $producto): ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span class="me-3"><?= htmlspecialchars($producto['producto_nombre']); ?> x <?= $producto['total_cantidad']; ?></span>
+                                <div class="d-flex ms-auto align-items-center">
+                                    <span class="text-dark me-2"><?= number_format($producto['precio'] * $producto['total_cantidad'], 2); ?>€</span>
+                                    <form action="<?= $_SERVER['PHP_SELF']; ?>" method="POST" class="d-inline">
+                                        <input type="hidden" name="eliminar_producto_id" value="<?= $producto['producto_id']; ?>">
+                                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                    </form>
+                                </div>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <!-- Botón Cerrar alineado a la izquierda -->
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                
+                <!-- Total y botón de Pagar -->
+                <div class="d-flex align-items-center">
                     <h5 class="me-3">Total: <?= number_format($totalCarrito, 2); ?>€</h5>
+                    
+                    <?php if (!empty($productosCarrito)): ?>
+                        <!-- Formulario de pago -->
+                        <form action="checkout.php" method="POST" class="d-inline">
+                            <!-- Campo oculto con el total del carrito -->
+                            <input type="hidden" name="total" value="<?= $totalCarrito; ?>">
+                            <!-- Botón de pago -->
+                            <button type="submit" class="btn btn-success">Pagar</button>
+                        </form>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
 
 </body>
 
