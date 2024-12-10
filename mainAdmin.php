@@ -85,7 +85,7 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
     <!-- Header -->
-    <header class=" container d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+    <header id="inicio" class= "container d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
         <a href="#" class="d-flex align-items-center text-dark text-decoration-none">
             <img src="public/img/JGO_LogoN.png" alt="Logo de la pastelería" class="img-fluid me-2" width="40" height="40">
 
@@ -103,11 +103,11 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
         <?php endif; ?>
 
         <!-- Formulario para seleccionar un nuevo producto -->
-        <h3 class="mt-4">Añadir Nuevo Producto</h3>
+        <h3 class="mt-4 text-center">Añadir Nuevo Producto</h3>
         <form method="POST">
-            <div class="mb-3">
-                <label for="producto" class="form-label">Seleccionar Producto</label>
-                <select class="form-select" id="producto" name="producto" required>
+            <div class="d-flex align-items-center justify-content-center gap-3 mb-3">
+                <label for="producto" class="form-label mb-0">Seleccionar Producto</label>
+                <select class="form-select w-auto" id="producto" name="producto" required>
                     <option value="">Seleccionar Producto</option>
                     <?php foreach ($productosAdmin as $productoAdmin): ?>
                         <option value="<?= htmlspecialchars($productoAdmin['id']); ?>">
@@ -115,19 +115,25 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
                         </option>
                     <?php endforeach; ?>
                 </select>
+
+                <button type="submit" class="btn btn-primary">Añadir Producto</button>
             </div>
-            <button type="submit" class="btn btn-primary">Añadir Producto</button>
         </form>
 
+
+
+
+
+
         <!-- Dulces Disponibles -->
-        <h3 class="mt-4">Dulces Disponibles:</h3>
+        <h3 class="mt-4" >Dulces Disponibles:</h3>
         <div class="row">
             <?php if (empty($dulces)): ?>
                 <p>No hay dulces disponibles.</p>
             <?php else: ?>
                 <?php foreach ($dulces as $dulce): ?>
                     <div class="col-md-4 mb-4">
-                        <div class="card">
+                        <div class="card card1">
                             <img src="<?= htmlspecialchars($dulce['imagen']); ?>" class="card-img-top" alt="<?= htmlspecialchars($dulce['nombre']); ?>">
                             <div class="card-body">
                                 <h5 class="card-title"><?= htmlspecialchars($dulce['nombre']); ?></h5>
@@ -205,6 +211,40 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </div>
     </div>
+
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5>Sobre Nosotros</h5>
+                    <p>En Pastelería Julio García, ofrecemos los mejores dulces hechos con cariño y los mejores ingredientes.</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Enlaces Útiles</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#inicio" class="text-white text-decoration-none">Inicio</a></li>
+                        <li><a href="#inicio" class="text-white text-decoration-none">Productos</a></li>
+                        <li><a href="#inicio" class="text-white text-decoration-none">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Contactanos</h5>
+                    <p>Email: contacto@pasteleriajuliogarcia.com</p>
+                    <p>Teléfono: +34 123 456 789</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center">
+                    <hr class="my-4">
+                    <p>&copy; 2024 Pastelería Julio García. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
 </body>
 
 </html>

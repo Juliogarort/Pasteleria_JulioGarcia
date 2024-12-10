@@ -10,6 +10,10 @@ $mensajeError = $_GET['error'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - Pastelería</title>
+    <link rel="icon" href="public/img/JGO_LogoN.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="public/css/style.css">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script defer src="public/js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
@@ -18,7 +22,7 @@ $mensajeError = $_GET['error'] ?? '';
     <div class="d-flex vh-100 justify-content-center align-items-center">
         <div class="col-12 col-md-6 col-lg-4">
             <div class="card shadow">
-                <div class="card-header text-center bg-success text-white">
+                <div class="card-header text-center bg-primary text-white">
                     <h4>Registro de usuario</h4>
                 </div>
                 <div class="card-body">
@@ -44,7 +48,7 @@ $mensajeError = $_GET['error'] ?? '';
                             <div id="passwordFeedback" class="mt-2" style="display: none;"></div>
                         </div>
                         <div class="text-center">
-                            <button type="submit" id="submitBtn" class="btn btn-success w-100" disabled>Registrar</button>
+                            <button type="submit" id="submitBtn" class="btn btn-primary w-100" disabled>Registrar</button>
                             <a href="index.php" class="btn btn-secondary w-100 mt-2">Volver al login</a>
                         </div>
                     </form>

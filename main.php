@@ -148,8 +148,8 @@ if (isset($_SESSION['usuario'])) {
 <body>
     <header class="container d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
         <a href="#" class="d-flex align-items-center text-dark text-decoration-none">
-        <img src="public/img/JGO_LogoN.png" alt="Logo de la pastelería" class="img-fluid me-2" width="40" height="40">
-        <span class="fs-4">Pastelería Julio García</span>
+            <img src="public/img/JGO_LogoN.png" alt="Logo de la pastelería" class="img-fluid me-2" width="40" height="40">
+            <span class="fs-4">Pastelería Julio García</span>
         </a>
         <div class="d-flex align-items-center">
             <span class="fs-6 me-3">Bienvenido, <?= htmlspecialchars($_SESSION['usuario']); ?>!</span>
@@ -168,7 +168,7 @@ if (isset($_SESSION['usuario'])) {
     </header>
 
 
-    <div class="container mt-5">
+    <div class="container mt-5" id="inicio">
         <h3 class="mb-4">Nuestros Dulces</h3>
         <div class="row">
             <?php if (empty($dulces)): ?>
@@ -176,7 +176,7 @@ if (isset($_SESSION['usuario'])) {
             <?php else: ?>
                 <?php foreach ($dulces as $dulce): ?>
                     <div class="col-md-4 mb-4">
-                        <div class="card">
+                        <div class="card card1">
                             <img src="<?= htmlspecialchars($dulce['imagen']); ?>" class="card-img-top" alt="Imagen de <?= htmlspecialchars($dulce['nombre']); ?>">
                             <div class="card-body">
                                 <h5 class="card-title"><?= htmlspecialchars($dulce['nombre']); ?></h5>
@@ -195,56 +195,86 @@ if (isset($_SESSION['usuario'])) {
     </div>
 
     <!-- Modal del Carrito -->
-<div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cartModalLabel">Tu Carrito de Compra</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <?php if (empty($productosCarrito)): ?>
-                    <p>No tienes productos en el carrito.</p>
-                <?php else: ?>
-                    <ul class="list-group">
-                        <?php foreach ($productosCarrito as $producto): ?>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span class="me-3"><?= htmlspecialchars($producto['producto_nombre']); ?> x <?= $producto['total_cantidad']; ?></span>
-                                <div class="d-flex ms-auto align-items-center">
-                                    <span class="text-dark me-2"><?= number_format($producto['precio'] * $producto['total_cantidad'], 2); ?>€</span>
-                                    <form action="<?= $_SERVER['PHP_SELF']; ?>" method="POST" class="d-inline">
-                                        <input type="hidden" name="eliminar_producto_id" value="<?= $producto['producto_id']; ?>">
-                                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                                    </form>
-                                </div>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php endif; ?>
-            </div>
-            <div class="modal-footer d-flex justify-content-between">
-                <!-- Botón Cerrar alineado a la izquierda -->
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                
-                <!-- Total y botón de Pagar -->
-                <div class="d-flex align-items-center">
-                    <h5 class="me-3">Total: <?= number_format($totalCarrito, 2); ?>€</h5>
-                    
-                    <?php if (!empty($productosCarrito)): ?>
-                        <!-- Formulario de pago -->
-                        <form action="checkout.php" method="POST" class="d-inline">
-                            <!-- Campo oculto con el total del carrito -->
-                            <input type="hidden" name="total" value="<?= $totalCarrito; ?>">
-                            <!-- Botón de pago -->
-                            <button type="submit" class="btn btn-success">Pagar</button>
-                        </form>
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartModalLabel">Tu Carrito de Compra</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <?php if (empty($productosCarrito)): ?>
+                        <p>No tienes productos en el carrito.</p>
+                    <?php else: ?>
+                        <ul class="list-group">
+                            <?php foreach ($productosCarrito as $producto): ?>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="me-3"><?= htmlspecialchars($producto['producto_nombre']); ?> x <?= $producto['total_cantidad']; ?></span>
+                                    <div class="d-flex ms-auto align-items-center">
+                                        <span class="text-dark me-2"><?= number_format($producto['precio'] * $producto['total_cantidad'], 2); ?>€</span>
+                                        <form action="<?= $_SERVER['PHP_SELF']; ?>" method="POST" class="d-inline">
+                                            <input type="hidden" name="eliminar_producto_id" value="<?= $producto['producto_id']; ?>">
+                                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                        </form>
+                                    </div>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
                     <?php endif; ?>
+                </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <!-- Botón Cerrar alineado a la izquierda -->
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+
+                    <!-- Total y botón de Pagar -->
+                    <div class="d-flex align-items-center">
+                        <h5 class="me-3">Total: <?= number_format($totalCarrito, 2); ?>€</h5>
+
+                        <?php if (!empty($productosCarrito)): ?>
+                            <!-- Formulario de pago -->
+                            <form action="checkout.php" method="POST" class="d-inline">
+                                <!-- Campo oculto con el total del carrito -->
+                                <input type="hidden" name="total" value="<?= $totalCarrito; ?>">
+                                <!-- Botón de pago -->
+                                <button type="submit" class="btn btn-success">Pagar</button>
+                            </form>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5>Sobre Nosotros</h5>
+                    <p>En Pastelería Julio García, ofrecemos los mejores dulces hechos con cariño y los mejores ingredientes.</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Enlaces Útiles</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#inicio" class="text-white text-decoration-none">Inicio</a></li>
+                        <li><a href="productos.php" class="text-white text-decoration-none">Productos</a></li>
+                        <li><a href="contacto.php" class="text-white text-decoration-none">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Contactanos</h5>
+                    <p>Email: contacto@pasteleriajuliogarcia.com</p>
+                    <p>Teléfono: +34 123 456 789</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center">
+                    <hr class="my-4">
+                    <p>&copy; 2024 Pastelería Julio García. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
 </body>
 
