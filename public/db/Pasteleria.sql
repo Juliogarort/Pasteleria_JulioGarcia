@@ -62,7 +62,16 @@ VALUES
     ('Cañas', 2.50, 'Dulces', 'Horneado', 'Crema', '/Pasteleria_JulioGarcia/public/img/caña.jpg'),
     ('Pastel de Belén', 4.50, 'Dulces', 'Horneado', 'Crema', '/Pasteleria_JulioGarcia/public/img/pastel.jpg'),
     ('Suso', 5.00, 'Dulces', 'Horneado', 'Crema', '/Pasteleria_JulioGarcia/public/img/suso.jpg'),
-    ('Tocino de Cielo', 3.75, 'Dulces', 'Horneado', 'Yema', '/Pasteleria_JulioGarcia/public/img/tocino.jpg');
+    ('Tocino de Cielo', 3.75, 'Dulces', 'Horneado', 'Yema', '/Pasteleria_JulioGarcia/public/img/tocino.jpg'),
+    ('Tarta chocolate', 20.00, 'Tartas', 'Tarta', 'Chocolate', '/Pasteleria_JulioGarcia/public/img/tarta-chocolate.jpg'),
+    ('Croissant', 2.50, 'Pasteles', 'Croissant', 'Nutella', '/Pasteleria_JulioGarcia/public/img/Croisant.jpg'),
+    ('Polvorones', 5.50, 'Galletas', 'Polvorón', 'Leche condensada', '/Pasteleria_JulioGarcia/public/img/polvorones.jpg'),
+    ('Churros chocolate', 6.00, 'Fogones', 'Churro', 'Chocolate', '/Pasteleria_JulioGarcia/public/img/churros.jpg'),
+    ('Galletas avena', 5.00, 'Galletas', 'Galleta', 'Avena', '/Pasteleria_JulioGarcia/public/img/galletas.jpg'),
+    ('Bollo crema', 3.50, 'Bollos', 'Bollo', 'Crema', '/Pasteleria_JulioGarcia/public/img/bollocrema.jpg'),
+    ('Palmera crema', 3.50, 'Pasteles', 'Palmera', 'Crema', '/Pasteleria_JulioGarcia/public/img/palmeracrema.jpg'),
+    ('Palmera chocolate', 3.75, 'Pasteles', 'Palmera', 'Chocolate', '/Pasteleria_JulioGarcia/public/img/palmerachocolate.jpg'),
+    ('Chocolate amargo', 2.00, 'Chocolate', 'Chocolate', 'Amargo', '/Pasteleria_JulioGarcia/public/img/chocolateamargo.jpg');
 
 
 -- Verificar los clientes insertados

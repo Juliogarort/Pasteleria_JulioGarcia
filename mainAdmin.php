@@ -200,7 +200,7 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
             <?php else: ?>
                 <?php foreach ($clientes as $cliente): ?>
                     <div class="col-md-4 mb-3">
-                        <div class="card h-100">
+                        <div class="card card1 h-100">
                             <div class="card-body">
                                 <h5 class="card-title"><?= htmlspecialchars($cliente['nombre']); ?></h5>
                                 <p class="card-text"><strong>Usuario:</strong> <?= htmlspecialchars($cliente['usuario']); ?></p>
