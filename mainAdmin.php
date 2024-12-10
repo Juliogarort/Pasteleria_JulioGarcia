@@ -66,6 +66,7 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -81,11 +82,12 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
+
 <body>
     <!-- Header -->
     <header class=" container d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
         <a href="#" class="d-flex align-items-center text-dark text-decoration-none">
-        <img src="public/img/JGO_LogoN.png" alt="Logo de la pastelería" class="img-fluid me-2" width="40" height="40">
+            <img src="public/img/JGO_LogoN.png" alt="Logo de la pastelería" class="img-fluid me-2" width="40" height="40">
 
             <span class="fs-4">Pastelería Julio García</span>
         </a>
@@ -114,38 +116,95 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
                     <?php endforeach; ?>
                 </select>
             </div>
-            <!-- Botón para enviar el formulario -->
             <button type="submit" class="btn btn-primary">Añadir Producto</button>
         </form>
 
         <!-- Dulces Disponibles -->
         <h3 class="mt-4">Dulces Disponibles:</h3>
-<div class="row">
-    <?php if (empty($dulces)): ?>
-        <p>No hay dulces disponibles.</p>
-    <?php else: ?>
-        <?php foreach ($dulces as $dulce): ?>
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <img src="<?= htmlspecialchars($dulce['imagen']); ?>" class="card-img-top" alt="Imagen de <?= htmlspecialchars($dulce['nombre']); ?>">
-                    <div class="card-body">
-                        <h5 class="card-title"><?= htmlspecialchars($dulce['nombre']); ?></h5>
-                        <p class="card-text"><?= htmlspecialchars($dulce['categoria']); ?></p>
-                        <p class="card-text"><strong>Precio: <?= number_format($dulce['precio'], 2); ?>€</strong></p>
-                        <!-- Botón de eliminar -->
-                        <form action="eliminar.php" method="POST" class="mt-2">
-                            <input type="hidden" name="id_producto" value="<?= htmlspecialchars($dulce['id']); ?>">
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash-alt"></i> Eliminar
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</div>
+        <div class="row">
+            <?php if (empty($dulces)): ?>
+                <p>No hay dulces disponibles.</p>
+            <?php else: ?>
+                <?php foreach ($dulces as $dulce): ?>
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <img src="<?= htmlspecialchars($dulce['imagen']); ?>" class="card-img-top" alt="<?= htmlspecialchars($dulce['nombre']); ?>">
+                            <div class="card-body">
+                                <h5 class="card-title"><?= htmlspecialchars($dulce['nombre']); ?></h5>
+                                <p class="card-text"><?= htmlspecialchars($dulce['categoria']); ?></p>
+                                <p class="card-text"><strong>Precio: <?= number_format($dulce['precio'], 2); ?>€</strong></p>
+                                <!-- Contenedor flex para botones -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <form action="eliminar.php" method="POST">
+                                        <input type="hidden" name="id_producto" value="<?= htmlspecialchars($dulce['id']); ?>">
+                                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                                    </form>
+                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarModal<?= $dulce['id']; ?>">Editar</button>
+                                </div>
+                            </div>
+                        </div>
 
+                    </div>
+
+                    <!-- Modal para Editar Producto -->
+                    <div class="modal fade" id="editarModal<?= $dulce['id']; ?>" tabindex="-1" aria-labelledby="editarModalLabel<?= $dulce['id']; ?>" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editarModalLabel<?= $dulce['id']; ?>">Editar Producto</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form method="POST" action="editarProducto.php">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id_producto" value="<?= $dulce['id']; ?>">
+                                        <div class="mb-3">
+                                            <label for="nombre<?= $dulce['id']; ?>" class="form-label">Nombre</label>
+                                            <input type="text" class="form-control" id="nombre<?= $dulce['id']; ?>" name="nombre" value="<?= htmlspecialchars($dulce['nombre']); ?>" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="precio<?= $dulce['id']; ?>" class="form-label">Precio</label>
+                                            <input type="number" class="form-control" id="precio<?= $dulce['id']; ?>" name="precio" value="<?= htmlspecialchars($dulce['precio']); ?>" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="categoria<?= $dulce['id']; ?>" class="form-label">Categoría</label>
+                                            <input type="text" class="form-control" id="categoria<?= $dulce['id']; ?>" name="categoria" value="<?= htmlspecialchars($dulce['categoria']); ?>" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="imagen<?= $dulce['id']; ?>" class="form-label">Imagen (URL)</label>
+                                            <input type="text" class="form-control" id="imagen<?= $dulce['id']; ?>" name="imagen" value="<?= htmlspecialchars($dulce['imagen']); ?>" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success">Guardar Cambios</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+        <!-- Listado de Usuarios Registrados -->
+        <h3 class="mt-5">Usuarios Registrados:</h3>
+        <div class="row">
+            <?php if (empty($clientes)): ?>
+                <p>No hay usuarios registrados.</p>
+            <?php else: ?>
+                <?php foreach ($clientes as $cliente): ?>
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><?= htmlspecialchars($cliente['nombre']); ?></h5>
+                                <p class="card-text"><strong>Usuario:</strong> <?= htmlspecialchars($cliente['usuario']); ?></p>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
     </div>
 </body>
+
 </html>
