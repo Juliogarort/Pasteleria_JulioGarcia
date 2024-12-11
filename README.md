@@ -42,17 +42,24 @@ Este proyecto corresponde a una aplicación web para gestionar una pastelería, 
 - La aplicación utiliza un enfoque modular para facilitar su mantenimiento y escalabilidad.
 
 ## Login/Registro
-![Vista para iniciar sesión]()
+![Vista para iniciar sesión]
 <p align="center">
-  <img src="public\img\login.png" alt="Banner_JGO">
+  <img src="public\img\login.png" alt="">
 </p>
 
 ## Página principal
 - **Visualización de productos**: Los usuarios pueden explorar los productos disponibles en la página principal `main.php`.
 
-![Vista principal](public\img\usuario.png)
+![Vista principal]
+<p align="center">
+  <img src="public\img\usuario.png" alt="">
+</p>
+
 
 ## Administrador
 - **Panel de administración**: `mainAdmin.php` permite a los administradores gestionar productos, visualizar clientes y realizar acciones específicas sobre el sistema.
 
-![Panel de administración](public\img\admin.png)
+![Panel de administración]
+<p align="center">
+  <img src="public\img\admin.png" alt="">
+</p>
