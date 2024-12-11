@@ -4,6 +4,9 @@ $mensajeError = $_GET['error'] ?? '';
 <?php
 $mensajeError = $_GET['error'] ?? '';
 ?>
+<?php
+$mensajeError = $_GET['error'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,13 +16,18 @@ $mensajeError = $_GET['error'] ?? '';
     <link rel="icon" href="public/img/JGO_LogoN.png" type="image/x-icon">
 
     <link rel="stylesheet" href="public/css/style.css">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script defer src="public/js/main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <div class="d-flex vh-100 justify-content-center align-items-center">
+    <div class="d-flex flex-column vh-100 justify-content-center align-items-center">
+        <!-- Contenedor de la imagen encima del formulario -->
+        <div class="mb-4">
+            <img src="public/img/JGO_LogoN.png" alt="Logo Pastelería" class="img-fluid" style="max-width: 200px;">
+        </div>
+
+        <!-- Tarjeta con el formulario de registro -->
         <div class="col-12 col-md-6 col-lg-4">
             <div class="card shadow">
                 <div class="card-header text-center bg-primary text-white">
@@ -58,4 +66,3 @@ $mensajeError = $_GET['error'] ?? '';
     </div>
 </body>
 </html>
-

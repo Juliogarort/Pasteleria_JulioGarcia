@@ -29,17 +29,6 @@ CREATE TABLE IF NOT EXISTS pedidos (
 );
 
 
-CREATE TABLE IF NOT EXISTS administradorProducto (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_producto VARCHAR(50) NOT NULL,
-    precio DECIMAL(10, 2) NOT NULL,
-    categoria VARCHAR(255),
-    imagen VARCHAR(255),
-    tipo_producto VARCHAR(50),
-    relleno VARCHAR(255)
-);
-
-
 INSERT INTO clientes (nombre, usuario, contraseña) 
 VALUES ('Oc', 'admin', 'admin'),
        ('Olga', 'usuario', 'usuario');
@@ -56,22 +45,6 @@ VALUES
     ('Palmera chocolate', 3.75, 'Pasteles', 'Palmera', 'Chocolate', '/Pasteleria_JulioGarcia/public/img/palmerachocolate.jpg'),
     ('Chocolate amargo', 2.00, 'Chocolate', 'Chocolate', 'Amargo', '/Pasteleria_JulioGarcia/public/img/chocolateamargo.jpg');
 
-INSERT INTO administradorProducto (nombre_producto, precio, categoria, tipo_producto, relleno, imagen)
-VALUES
-    ('Donuts', 3.00, 'Dulces', 'Frito', 'Azúcar', '/Pasteleria_JulioGarcia/public/img/donut.jpg'),
-    ('Cañas', 2.50, 'Dulces', 'Horneado', 'Crema', '/Pasteleria_JulioGarcia/public/img/caña.jpg'),
-    ('Pastel de Belén', 4.50, 'Dulces', 'Horneado', 'Crema', '/Pasteleria_JulioGarcia/public/img/pastel.jpg'),
-    ('Suso', 5.00, 'Dulces', 'Horneado', 'Crema', '/Pasteleria_JulioGarcia/public/img/suso.jpg'),
-    ('Tocino de Cielo', 3.75, 'Dulces', 'Horneado', 'Yema', '/Pasteleria_JulioGarcia/public/img/tocino.jpg'),
-    ('Tarta chocolate', 20.00, 'Tartas', 'Tarta', 'Chocolate', '/Pasteleria_JulioGarcia/public/img/tarta-chocolate.jpg'),
-    ('Croissant', 2.50, 'Pasteles', 'Croissant', 'Nutella', '/Pasteleria_JulioGarcia/public/img/Croisant.jpg'),
-    ('Polvorones', 5.50, 'Galletas', 'Polvorón', 'Leche condensada', '/Pasteleria_JulioGarcia/public/img/polvorones.jpg'),
-    ('Churros chocolate', 6.00, 'Fogones', 'Churro', 'Chocolate', '/Pasteleria_JulioGarcia/public/img/churros.jpg'),
-    ('Galletas avena', 5.00, 'Galletas', 'Galleta', 'Avena', '/Pasteleria_JulioGarcia/public/img/galletas.jpg'),
-    ('Bollo crema', 3.50, 'Bollos', 'Bollo', 'Crema', '/Pasteleria_JulioGarcia/public/img/bollocrema.jpg'),
-    ('Palmera crema', 3.50, 'Pasteles', 'Palmera', 'Crema', '/Pasteleria_JulioGarcia/public/img/palmeracrema.jpg'),
-    ('Palmera chocolate', 3.75, 'Pasteles', 'Palmera', 'Chocolate', '/Pasteleria_JulioGarcia/public/img/palmerachocolate.jpg'),
-    ('Chocolate amargo', 2.00, 'Chocolate', 'Chocolate', 'Amargo', '/Pasteleria_JulioGarcia/public/img/chocolateamargo.jpg');
 
 
 -- Verificar los clientes insertados
@@ -90,5 +63,4 @@ FROM pedidos p
 JOIN clientes c ON p.cliente_id = c.id
 JOIN productos pr ON p.producto_id = pr.id;
 
--- Verificar los productos del administrador
-SELECT * FROM administradorProducto;
+

@@ -16,46 +16,46 @@ require_once 'public/util/Conexion.php';
 // Obtener la conexión
 $conexion = Conexion::obtenerInstancia()->obtenerConexion();
 
-// Lógica para agregar un producto seleccionado
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['producto'])) {
-    $idProducto = $_POST['producto'];
+// Lógica para agregar un nuevo producto
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nombre'], $_POST['precio'], $_POST['categoria'], $_FILES['imagen'])) {
+    $nombre = $_POST['nombre'];
+    $precio = $_POST['precio'];
+    $categoria = $_POST['categoria'];
 
-    // Obtener información del producto seleccionado en administradorProducto
-    $sqlProducto = "SELECT nombre_producto, precio, categoria, imagen FROM administradorProducto WHERE id = :id";
-    $stmtProducto = $conexion->prepare($sqlProducto);
-    $stmtProducto->bindParam(':id', $idProducto, PDO::PARAM_INT);
-    $stmtProducto->execute();
-    $producto = $stmtProducto->fetch(PDO::FETCH_ASSOC);
+    // Procesar la imagen
+    $imagen = $_FILES['imagen'];
+    $nombreImagen = basename($imagen['name']);
+    $rutaImagen = 'public/img/' . $nombreImagen;
 
-    if ($producto) {
-        // Insertar el producto en la tabla `productos`
-        $sqlInsertar = "INSERT INTO productos (nombre, precio, categoria, imagen) VALUES (:nombre, :precio, :categoria, :imagen)";
-        $stmtInsertar = $conexion->prepare($sqlInsertar);
-        $stmtInsertar->bindParam(':nombre', $producto['nombre_producto']);
-        $stmtInsertar->bindParam(':precio', $producto['precio']);
-        $stmtInsertar->bindParam(':categoria', $producto['categoria']);
-        $stmtInsertar->bindParam(':imagen', $producto['imagen']);
-        $stmtInsertar->execute();
+    // Mover el archivo a la carpeta de imágenes
+    if (move_uploaded_file($imagen['tmp_name'], $rutaImagen)) {
+        try {
+            // Insertar el producto en la base de datos con la ruta de la imagen
+            $sqlInsertar = "INSERT INTO productos (nombre, precio, categoria, imagen) VALUES (:nombre, :precio, :categoria, :imagen)";
+            $stmtInsertar = $conexion->prepare($sqlInsertar);
+            $stmtInsertar->bindParam(':nombre', $nombre);
+            $stmtInsertar->bindParam(':precio', $precio);
+            $stmtInsertar->bindParam(':categoria', $categoria);
+            $stmtInsertar->bindParam(':imagen', $rutaImagen);
+            $stmtInsertar->execute();
 
-        // Redirigir con mensaje de éxito
-        header("Location: mainAdmin.php?mensaje=producto_agregado");
-        exit();
+            // Redirigir con mensaje de éxito
+            header("Location: mainAdmin.php?mensaje=producto_creado");
+            exit();
+        } catch (PDOException $e) {
+            echo "Error al crear el producto: " . $e->getMessage();
+        }
     } else {
-        echo "Error: Producto no encontrado.";
+        echo "Error al subir la imagen.";
     }
 }
+
 
 // Obtener productos de la tabla productos
 $sql = "SELECT id, nombre, precio, categoria, imagen FROM productos";
 $stmt = $conexion->prepare($sql);
 $stmt->execute();
 $dulces = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Obtener productos disponibles en administradorProducto
-$sqlAdminProductos = "SELECT id, nombre_producto, precio, categoria, imagen FROM administradorProducto";
-$stmtAdminProductos = $conexion->prepare($sqlAdminProductos);
-$stmtAdminProductos->execute();
-$productosAdmin = $stmtAdminProductos->fetchAll(PDO::FETCH_ASSOC);
 
 // Consulta para obtener los clientes registrados
 $sqlClientes = "SELECT nombre, usuario FROM clientes";
@@ -85,7 +85,7 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
     <!-- Header -->
-    <header id="inicio" class= "container d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
+    <header id="inicio" class="container d-flex justify-content-between align-items-center py-3 mb-4 border-bottom">
         <a href="#" class="d-flex align-items-center text-dark text-decoration-none">
             <img src="public/img/JGO_LogoN.png" alt="Logo de la pastelería" class="img-fluid me-2" width="40" height="40">
 
@@ -98,35 +98,51 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
     </header>
 
     <div class="container mt-5">
-        <?php if (isset($_GET['mensaje']) && $_GET['mensaje'] === 'producto_agregado'): ?>
-            <div class="alert alert-success">¡Producto agregado exitosamente!</div>
-        <?php endif; ?>
+        <!-- Botón para abrir el modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#crearProductoModal">
+            Crear Producto
+        </button>
 
-        <!-- Formulario para seleccionar un nuevo producto -->
-        <h3 class="mt-4 text-center">Añadir Nuevo Producto</h3>
-        <form method="POST">
-            <div class="d-flex align-items-center justify-content-center gap-3 mb-3">
-                <label for="producto" class="form-label mb-0">Seleccionar Producto</label>
-                <select class="form-select w-auto" id="producto" name="producto" required>
-                    <option value="">Seleccionar Producto</option>
-                    <?php foreach ($productosAdmin as $productoAdmin): ?>
-                        <option value="<?= htmlspecialchars($productoAdmin['id']); ?>">
-                            <?= htmlspecialchars($productoAdmin['nombre_producto']); ?> - <?= number_format($productoAdmin['precio'], 2); ?>€
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+        <!-- Modal para Crear Producto -->
+        <div class="modal fade" id="crearProductoModal" tabindex="-1" aria-labelledby="crearProductoModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="crearProductoModalLabel">Crear Nuevo Producto</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST" action="" enctype="multipart/form-data">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">Nombre del Producto</label>
+                                <input type="text" class="form-control" id="nombre" name="nombre" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="precio" class="form-label">Precio</label>
+                                <input type="number" class="form-control" id="precio" name="precio" step="0.01" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="categoria" class="form-label">Categoría</label>
+                                <input type="text" class="form-control" id="categoria" name="categoria" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="imagen" class="form-label">Imagen</label>
+                                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success">Guardar Producto</button>
+                        </div>
+                    </form>
 
-                <button type="submit" class="btn btn-primary">Añadir Producto</button>
+                </div>
             </div>
-        </form>
-
-
-
-
+        </div>
 
 
         <!-- Dulces Disponibles -->
-        <h3 class="mt-4" >Dulces Disponibles:</h3>
+        <h3 class="mt-4">Dulces Disponibles:</h3>
         <div class="row">
             <?php if (empty($dulces)): ?>
                 <p>No hay dulces disponibles.</p>
@@ -137,19 +153,17 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
                             <img src="<?= htmlspecialchars($dulce['imagen']); ?>" class="card-img-top" alt="<?= htmlspecialchars($dulce['nombre']); ?>">
                             <div class="card-body">
                                 <h5 class="card-title"><?= htmlspecialchars($dulce['nombre']); ?></h5>
-                                <p class="card-text"><?= htmlspecialchars($dulce['categoria']); ?></p>
+                                <p class="card-text">Categoría: <?= htmlspecialchars($dulce['categoria']); ?></p>
                                 <p class="card-text"><strong>Precio: <?= number_format($dulce['precio'], 2); ?>€</strong></p>
-                                <!-- Contenedor flex para botones -->
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <form action="eliminar.php" method="POST">
-                                        <input type="hidden" name="id_producto" value="<?= htmlspecialchars($dulce['id']); ?>">
-                                        <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</button>
-                                    </form>
-                                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarModal<?= $dulce['id']; ?>">Editar</button>
-                                </div>
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editarModal<?= $dulce['id']; ?>">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <form action="eliminar.php" method="POST" class="d-inline">
+                                    <input type="hidden" name="id_producto" value="<?= htmlspecialchars($dulce['id']); ?>">
+                                    <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                                </form>
                             </div>
                         </div>
-
                     </div>
 
                     <!-- Modal para Editar Producto -->
@@ -177,7 +191,7 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
                                         </div>
                                         <div class="mb-3">
                                             <label for="imagen<?= $dulce['id']; ?>" class="form-label">Imagen (URL)</label>
-                                            <input type="text" class="form-control" id="imagen<?= $dulce['id']; ?>" name="imagen" value="<?= htmlspecialchars($dulce['imagen']); ?>" required>
+                                            <input type="text" class="form-control" id="imagen<?= $dulce['id']; ?>" name="imagen" value="<?= htmlspecialchars($dulce['imagen']); ?>">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -188,10 +202,10 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                         </div>
                     </div>
-
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
+
         <!-- Listado de Usuarios Registrados -->
         <h3 class="mt-5">Usuarios Registrados:</h3>
         <div class="row">
@@ -212,7 +226,6 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-
     <!-- Footer -->
     <footer class="bg-dark text-white py-4 mt-5">
         <div class="container">
@@ -230,7 +243,7 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
                     </ul>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <h5>Contactanos</h5>
+                    <h5>Contáctanos</h5>
                     <p>Email: contacto@pasteleriajuliogarcia.com</p>
                     <p>Teléfono: +34 123 456 789</p>
                 </div>
@@ -243,8 +256,6 @@ $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </footer>
-
-
 </body>
 
 </html>

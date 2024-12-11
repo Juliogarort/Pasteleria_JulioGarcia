@@ -6,7 +6,7 @@ $mensajeError = $_GET['error'] ?? '';
 // Obtener el mensaje de error si existe
 $mensajeError = $_GET['error'] ?? '';
 ?>
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,12 +14,17 @@ $mensajeError = $_GET['error'] ?? '';
     <title>Login - Pastelería</title>
     <link rel="icon" href="public/img/JGO_LogoN.png" type="image/x-icon">
 
-        <!-- Vincular archivo CSS -->
-        <link rel="stylesheet" href="public/css/style.css">
+    <!-- Vincular archivo CSS -->
+    <link rel="stylesheet" href="public/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="d-flex vh-100 justify-content-center align-items-center">
+    <div class="d-flex flex-column vh-100 justify-content-center align-items-center">
+        <div class="mb-4">
+            <img src="public/img/JGO_LogoN.png" alt="Logo Pastelería" class="img-fluid" style="max-width: 200px;">
+        </div>
+
+        <!-- Tarjeta con el formulario -->
         <div class="col-12 col-md-6 col-lg-4">
             <div class="card shadow">
                 <div class="card-header text-center bg-primary text-white">
@@ -51,7 +56,7 @@ $mensajeError = $_GET['error'] ?? '';
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
