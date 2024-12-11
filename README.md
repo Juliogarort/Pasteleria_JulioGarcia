@@ -62,7 +62,8 @@ Este proyecto corresponde a una aplicación web para gestionar una pastelería, 
 ---
 
 ## 🌐 Login/Registro
-
+- Panel para inicio de sesión y registro de usuarios.
+  
 <p align="center">
   <img src="public/img/login.png" alt="Vista de login" width="60%">
 </p>
