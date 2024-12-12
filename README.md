@@ -66,7 +66,7 @@ Este proyecto corresponde a una aplicación web para gestionar una pastelería, 
 Puedes ver el video del funcionamiento de la pastelería a continuación:
 
 <video width="640" height="360" controls>
-  <source src="public\img\Tutorial-Pasteleria_JGO.mkv" type="video/mkv">
+  <source src="public/img/Tutorial-Pasteleria_JGO.mp4" type="video/mp4">
 </video>
 
 
