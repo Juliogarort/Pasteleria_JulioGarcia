@@ -61,6 +61,14 @@ Este proyecto corresponde a una aplicación web para gestionar una pastelería, 
 
 ---
 
+## 🎥 Video funcionamiento Pastelería
+
+Puedes ver el video del funcionamiento de la pastelería a continuación:
+
+[Ver Video de funcionamiento](public/img/Tutorial-Pasteleria_JGO.mkv)
+
+
+
 ## 🌐 Login/Registro
 - Panel para inicio de sesión y registro de usuarios.
   
