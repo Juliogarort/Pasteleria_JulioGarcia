@@ -63,11 +63,16 @@ Este proyecto corresponde a una aplicación web para gestionar una pastelería, 
 
 ## 🎥 Video funcionamiento Pastelería
 
-Puedes ver el video del funcionamiento de la pastelería haciendo clic en el siguiente enlace:
+<p align="center">
+  Puedes ver el video del funcionamiento de la pastelería haciendo clic en la imagen a continuación:
+</p>
 
-<div align="center">
-[![Ver Video](https://img.youtube.com/vi/9-5KSHnEKt0/0.jpg)](https://youtu.be/9-5KSHnEKt0)
-</div>
+<p align="center">
+  <a href="https://youtu.be/9-5KSHnEKt0">
+    <img src="https://img.youtube.com/vi/9-5KSHnEKt0/0.jpg" alt="Ver Video" style="max-width:100%;">
+  </a>
+</p>
+
 
 ## 🌐 Login/Registro
 - Panel para inicio de sesión y registro de usuarios.
